@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,7 +15,7 @@ import org.springframework.util.DigestUtils;
 
 @RestController
 public class CallbackController {
-    private static final String SECRET_KEY = "SECRET"; //登录网页, 在首页点击“配置回调参数” 可查看自己的SECRET KEY
+    private static final String SECRET_KEY = "fivCFJLTWXY$"; //登录网页, 在首页点击“配置回调参数” 可查看自己的SECRET KEY
 
     @ResponseBody
     @RequestMapping(value = "/callback")
@@ -45,6 +46,18 @@ public class CallbackController {
         result = this.get_common_ack();
 
         return body;
+    }
+
+    private HashMap<String, Object> report_new_msg(String wxid, String appid, LinkedHashMap<String, Object> data) {
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("ack_type", "report_new_msg_ack");
+        System.out.println("report_new_msg:"+data.get("msg"));
+        Map<String,Object> map= (Map<String, Object>) data.get("msg");
+
+        if(Integer.parseInt(map.get("msg_type").toString())==4901){
+            System.out.println("xiaochengxu raw_msg:"+map.get("raw_msg"));
+        }
+        return result;
     }
 
     private HashMap<String, Object> login(String wxid, String appid, LinkedHashMap<String, Object> data) {
