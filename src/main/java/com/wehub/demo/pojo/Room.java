@@ -9,5 +9,6 @@ public class Room {
     private String name;
     private String owner_wxid;
     private String head_img;
+    private int member_count;
     private List<Member> memberInfo_list;
 }

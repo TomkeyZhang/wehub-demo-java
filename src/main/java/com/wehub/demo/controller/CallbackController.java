@@ -17,6 +17,7 @@ import org.springframework.util.DigestUtils;
 @RestController
 public class CallbackController {
     private static final String SECRET_KEY = "fivCFJLTWXY$"; //登录网页, 在首页点击“配置回调参数” 可查看自己的SECRET KEY
+    List<String> roomTaskList=new ArrayList<>();
 
     @Autowired
     CallbackService service;
@@ -62,17 +63,7 @@ public class CallbackController {
 //        return result;
 //    }
 
-//    private HashMap<String, Object> pull_task(String wxid, String appid, LinkedHashMap<String, Object> data) {
-//        //report_room_member_info
-//        HashMap<String, Object> result = new HashMap<String, Object>();
-//        result.put("ack_type", "pull_task_ack");
-//        result.put("data",data);
-//        System.out.println("pull_task_ack");
-//        data.put("task_id",""+System.currentTimeMillis());
-//        HashMap<String, Object> taskData=new HashMap<>();
-//        taskData.put("task_type",4);
-//        return result;
-//    }
+
 
     //获取群成员信息
     private HashMap<String, Object> report_room_member_info(String wxid, String appid, LinkedHashMap<String, Object> data) {
@@ -88,11 +79,23 @@ public class CallbackController {
         //report_room_member_info
         HashMap<String, Object> result = new HashMap<>();
         result.put("ack_type", "common_ack");
-        service.createOrUpdateRoom(Arrays.asList(data));
+//        service.createOrUpdateRoom(Arrays.asList(data));
+        roomTaskList.add(data.get("wxid").toString());
         return result;
     }
 
-    //获取群成员变动信息
+    //轮询任务
+    private HashMap<String, Object> pull_task(String wxid, String appid, LinkedHashMap<String, Object> data) {
+        if(roomTaskList.isEmpty()){
+            return new HashMap<>();
+        }
+        HashMap<String, Object> result=roomResponse(new ArrayList<>(roomTaskList));
+        roomTaskList.clear();
+        System.out.println("hasRoomTaskList="+roomTaskList);
+        return result;
+    }
+
+    //群成员变动信息回调
     private HashMap<String, Object> report_room_member_change(String wxid, String appid, LinkedHashMap<String, Object> data) {
         return roomResponse(Arrays.asList(data.get("room_wxid").toString()));
     }
