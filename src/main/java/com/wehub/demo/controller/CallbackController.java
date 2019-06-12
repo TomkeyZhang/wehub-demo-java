@@ -87,6 +87,7 @@ public class CallbackController {
 
     //轮询任务
     private HashMap<String, Object> pull_task(String wxid, String appid, LinkedHashMap<String, Object> data) {
+        System.out.println("pull_task RoomTaskList=" + roomTaskList);
         if (roomTaskList.isEmpty()) {
             return new HashMap<>();
         }
@@ -95,7 +96,6 @@ public class CallbackController {
         if (nextRoomCount > 500) {
             nextRoomCount = 500;
         }
-        System.out.println("pull_task RoomTaskList=" + roomTaskList);
         List<String> nextRoomTaskList=new ArrayList<>(nextRoomCount >= roomTaskList.size() ? roomTaskList : roomTaskList.subList(0, nextRoomCount));
         HashMap<String, Object> result = roomResponse(nextRoomTaskList);
 
